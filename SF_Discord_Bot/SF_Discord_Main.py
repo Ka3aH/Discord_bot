@@ -47,7 +47,7 @@ async def tr(ctx, channel_name: str, *, text: str):
     # Запрос перевода
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Используйте подходящую модель
+            model="gpt-4o-mini",  # Используйте новую модель
             messages=[
                 {"role": "user", "content": f"Translate the following text from Russian to English:\n{text}"}
             ],
