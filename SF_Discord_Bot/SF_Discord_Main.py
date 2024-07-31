@@ -37,15 +37,15 @@ async def on_ready():
 async def generate(ctx, *, prompt: str):
     """Команда для генерации текста с использованием GPT."""
     try:
-        response = openai.Completion.create(
-            engine="text-davinci-003",  # Вы можете выбрать другой движок, если нужно
-            prompt=prompt,
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # Вы можете выбрать другой движок, если нужно
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
             max_tokens=150,  # Вы можете настроить это в зависимости от вашего запроса
-            n=1,
-            stop=None,
             temperature=0.7,  # Настройте это значение для управления креативностью
         )
-        generated_text = response.choices[0].text.strip()
+        generated_text = response.choices[0].message['content'].strip()
         await ctx.send(generated_text)
     except Exception as e:
         await ctx.send(f"An error occurred: {e}")
@@ -59,13 +59,15 @@ async def tr(ctx, channel_name: str, *, text: str):
     
     # Запрос перевода
     try:
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=f"Translate the following text from Russian to English:\n{text}",
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": f"Translate the following text from Russian to English:\n{text}"}
+            ],
             max_tokens=1000,
             temperature=0.5
         )
-        translated_text = response.choices[0].text.strip()
+        translated_text = response.choices[0].message['content'].strip()
 
         # Запрос подтверждения
         confirmation_message = await ctx.send(
