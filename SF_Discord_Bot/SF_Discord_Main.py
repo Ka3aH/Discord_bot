@@ -42,13 +42,14 @@ async def tr(ctx, channel_name: str, *, text: str):
 
     # Запрос перевода
     try:
-        response = openai.Completion.create(
-            model="text-davinci-003",  # Используйте модель для выполнения перевода
-            prompt=f"Translate the following text from Russian to English:\n{text}",
-            max_tokens=1000,
-            temperature=0.5
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # Используйте подходящую модель
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": f"Translate the following text from Russian to English:\n{text}"}
+            ]
         )
-        translated_text = response.choices[0].text.strip()
+        translated_text = response.choices[0].message['content'].strip()
 
         # Запрос подтверждения
         confirmation_message = await ctx.send(
