@@ -110,6 +110,10 @@ async def tr(ctx, channel_name: str, *, text: str):
 @bot.command()
 async def token(ctx):
     """Команда для отображения общего количества использованных токенов."""
+    if "Project Manager" not in [role.name for role in ctx.author.roles]:
+        await ctx.send("У вас нет прав для использования этой команды.")
+        return
+
     total_tokens = read_total_tokens()
     await ctx.send(f"Общее количество использованных токенов: {total_tokens}")
 
