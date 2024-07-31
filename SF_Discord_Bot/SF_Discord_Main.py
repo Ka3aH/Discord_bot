@@ -6,10 +6,34 @@ import os
 import asyncio
 from dotenv import load_dotenv
 import openai
+import logging
 
-# Временный код отладки
-print("OpenAI version:", openai.__version__)
-print("Discord.py version:", discord.__version__)
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+
+# Файл для хранения общего количества токенов
+TOKEN_USAGE_FILE = 'token_usage.txt'
+
+def read_total_tokens():
+    """Чтение общего количества токенов из файла."""
+    if os.path.exists(TOKEN_USAGE_FILE):
+        with open(TOKEN_USAGE_FILE, 'r') as file:
+            return int(file.read().strip())
+    return 0
+
+def write_total_tokens(total_tokens):
+    """Запись общего количества токенов в файл."""
+    with open(TOKEN_USAGE_FILE, 'w') as file:
+        file.write(str(total_tokens))
+
+def log_usage(response):
+    """Логирование использования токенов и обновление общего количества токенов."""
+    tokens_used = response['usage']['total_tokens']
+    logging.info(f"Tokens used: {tokens_used}")
+
+    # Обновление общего количества токенов
+    total_tokens = read_total_tokens() + tokens_used
+    write_total_tokens(total_tokens)
 
 # Загрузка переменных окружения из файла .env
 load_dotenv()
@@ -18,11 +42,6 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 # Настройка OpenAI API ключа
 openai.api_key = OPENAI_API_KEY
-
-def log_usage(response):
-    """Логирование использования токенов и затрат."""
-    tokens_used = response['usage']['total_tokens']
-    logging.info(f"Tokens used: {tokens_used}")
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -59,6 +78,7 @@ async def tr(ctx, channel_name: str, *, text: str):
             max_tokens=150,
             temperature=0.7,
         )
+        log_usage(response)  # Логирование использования токенов
         translated_text = response.choices[0].message['content'].strip()
 
         # Запрос подтверждения
@@ -86,6 +106,12 @@ async def tr(ctx, channel_name: str, *, text: str):
 
     except Exception as e:
         await ctx.send(f"Произошла ошибка: {e}")
+
+@bot.command()
+async def token(ctx):
+    """Команда для отображения общего количества использованных токенов."""
+    total_tokens = read_total_tokens()
+    await ctx.send(f"Общее количество использованных токенов: {total_tokens}")
 
 async def main():
     await load_extensions()
