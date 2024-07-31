@@ -39,18 +39,16 @@ async def tr(ctx, channel_name: str, *, text: str):
     if "Project Manager" not in [role.name for role in ctx.author.roles]:
         await ctx.send("У вас нет прав для использования этой команды.")
         return
-    
+
     # Запрос перевода
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "user", "content": f"Translate the following text from Russian to English:\n{text}"}
-            ],
+        response = openai.Completion.create(
+            model="text-davinci-003",  # Используйте модель для выполнения перевода
+            prompt=f"Translate the following text from Russian to English:\n{text}",
             max_tokens=1000,
             temperature=0.5
         )
-        translated_text = response.choices[0].message['content'].strip()
+        translated_text = response.choices[0].text.strip()
 
         # Запрос подтверждения
         confirmation_message = await ctx.send(
