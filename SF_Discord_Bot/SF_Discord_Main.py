@@ -34,23 +34,6 @@ async def on_ready():
     print(f'Logged in as {bot.user.name}')
 
 @bot.command()
-async def generate(ctx, *, prompt: str):
-    """Команда для генерации текста с использованием GPT."""
-    try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Вы можете выбрать другой движок, если нужно
-            messages=[
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=150,  # Вы можете настроить это в зависимости от вашего запроса
-            temperature=0.7,  # Настройте это значение для управления креативностью
-        )
-        generated_text = response.choices[0].message['content'].strip()
-        await ctx.send(generated_text)
-    except Exception as e:
-        await ctx.send(f"An error occurred: {e}")
-
-@bot.command()
 async def tr(ctx, channel_name: str, *, text: str):
     """Команда для перевода текста с использованием GPT и подтверждения отправки."""
     if "Project Manager" not in [role.name for role in ctx.author.roles]:
