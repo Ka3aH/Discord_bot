@@ -7,6 +7,11 @@ import asyncio
 from dotenv import load_dotenv
 import openai
 
+#временный код отладки
+print("OpenAI version:", openai.__version__)
+print("Discord.py version:", discord.__version__)
+#временный код отладки
+
 # Загрузка переменных окружения из файла .env
 load_dotenv()
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
