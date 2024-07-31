@@ -7,10 +7,9 @@ import asyncio
 from dotenv import load_dotenv
 import openai
 
-#временный код отладки
+# Временный код отладки
 print("OpenAI version:", openai.__version__)
 print("Discord.py version:", discord.__version__)
-#временный код отладки
 
 # Загрузка переменных окружения из файла .env
 load_dotenv()
@@ -69,12 +68,12 @@ async def tr(ctx, channel_name: str, *, text: str):
             response_message = await bot.wait_for('message', timeout=60.0, check=check)
             if response_message.content.lower() in ['да', 'yes']:
                 # Отправка перевода в указанный канал
-                for channel in ctx.guild.channels:
-                    if channel.name == channel_name:
-                        await channel.send(f"Переведенный текст:\n\n{translated_text}")
-                        await ctx.send(f"Переведенный текст отправлен в канал {channel_name}.")
-                        return
-                await ctx.send(f"Канал с именем {channel_name} не найден.")
+                channel = discord.utils.get(ctx.guild.channels, name=channel_name)
+                if channel:
+                    await channel.send(f"Переведенный текст:\n\n{translated_text}")
+                    await ctx.send(f"Переведенный текст отправлен в канал {channel_name}.")
+                else:
+                    await ctx.send(f"Канал с именем {channel_name} не найден.")
             else:
                 await ctx.send("Отправка перевода отменена.")
         except asyncio.TimeoutError:
