@@ -45,9 +45,10 @@ async def tr(ctx, channel_name: str, *, text: str):
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",  # Используйте подходящую модель
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": f"Translate the following text from Russian to English:\n{text}"}
-            ]
+            ],
+            max_tokens=150,
+            temperature=0.7,
         )
         translated_text = response.choices[0].message['content'].strip()
 
