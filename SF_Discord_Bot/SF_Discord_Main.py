@@ -19,6 +19,11 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 # Настройка OpenAI API ключа
 openai.api_key = OPENAI_API_KEY
 
+def log_usage(response):
+    """Логирование использования токенов и затрат."""
+    tokens_used = response['usage']['total_tokens']
+    logging.info(f"Tokens used: {tokens_used}")
+
 intents = discord.Intents.default()
 intents.message_content = True
 
