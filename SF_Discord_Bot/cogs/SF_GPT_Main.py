@@ -15,15 +15,15 @@ class SF_GPT_Main(commands.Cog):
     async def get_gpt_response(self, query):
         """Получение ответа от GPT-4o-mini на основе запроса."""
         try:
-            response = openai.Completion.create(
-                engine="gpt-4o-mini",  # Убедитесь, что имя модели правильное
-                prompt=query,
+            response = openai.ChatCompletion.create(
+                model="gpt-4o-mini",  # Убедитесь, что имя модели правильное
+                messages=[
+                    {"role": "user", "content": query}
+                ],
                 max_tokens=150,
-                n=1,
-                stop=None,
                 temperature=0.7
             )
-            return response.choices[0].text.strip()
+            return response.choices[0].message['content'].strip()
         except Exception as e:
             print(f"Ошибка при вызове GPT-4o-mini API: {e}")
             return "Произошла ошибка при получении ответа. Попробуйте позже."
