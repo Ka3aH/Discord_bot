@@ -31,7 +31,8 @@ class SF_GPT_Main(commands.Cog):
         for item in self.knowledge_base:
             title_lower = item['title'].lower()
             content_lower = item['content'].lower()
-            if query_lower in title_lower or query_lower in content_lower:
+            # Проверяем, есть ли в запросе ключевые слова из заголовка или контента
+            if any(keyword in query_lower for keyword in [title_lower, content_lower]):
                 return item['content']
         return None
 
@@ -66,7 +67,11 @@ class SF_GPT_Main(commands.Cog):
         if relevant_content:
             response = relevant_content
         else:
-            # Если в базе знаний нет точного совпадения, сообщаем, что не можем предоставить ответ
+            # Если в базе знаний нет точного совпадения, используем GPT для обработки запроса
+            response = await self.get_gpt_response(query)
+        
+        # Если и GPT не дал ответ, возвращаем сообщение о невозможности предоставить ответ
+        if not response or response.lower().startswith("произошла ошибка"):
             response = "Я не могу предоставить ответ на этот вопрос из-за ограничений."
 
         # Отправка ответа пользователю
