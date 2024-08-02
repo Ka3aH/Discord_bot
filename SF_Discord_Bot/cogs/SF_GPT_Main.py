@@ -52,7 +52,7 @@ class SF_GPT_Main(commands.Cog):
 
     @commands.command(name='sf', aliases=['SF'])
     async def sf(self, ctx, *, query: str = None):
-        """Команда для получения ответа от GPT-4o-mini."""
+        """Команда для получения ответа из базы знаний или GPT-4o-mini."""
         if query is None:
             await ctx.send("Пожалуйста, введите вопрос или запрос.")
             return
@@ -63,9 +63,9 @@ class SF_GPT_Main(commands.Cog):
         if relevant_content:
             response = relevant_content
         else:
-            # Если в базе знаний нет точного совпадения, используем GPT для обработки запроса
-            response = await self.get_gpt_response(query)
-        
+            # Если в базе знаний нет точного совпадения, сообщаем о невозможности предоставить ответ
+            response = "Я не могу предоставить ответ на этот вопрос из-за ограничений."
+
         # Отправка ответа пользователю
         if len(response) > MAX_RESPONSE_LENGTH:
             response = response[:MAX_RESPONSE_LENGTH]
