@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from .sf_gpt_library import get_knowledge_response  # Используйте относительный импорт
+from cogs.sf_gpt_library import get_knowledge_response  # Используйте абсолютный импорт
 
 class SF_GPT_Main(commands.Cog):
     """Cog для обработки команды !SF и использования базы знаний из JSON файла."""
