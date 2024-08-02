@@ -7,8 +7,11 @@ import os
 # Загрузите ваш API ключ OpenAI из переменных окружения
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
+# Определите максимальную длину ответа
+MAX_RESPONSE_LENGTH = 2000
+
 class SF_GPT_Main(commands.Cog):
-    """Cog для обработки команды !SF и использования GPT-4o-mini для ответов на запросы."""
+    """Cog для обработки команды !sf и использования GPT-4o-mini для ответов на запросы."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -40,7 +43,9 @@ class SF_GPT_Main(commands.Cog):
                 max_tokens=150,
                 temperature=0.7
             )
-            return response.choices[0].message['content'].strip()
+            # Получаем ответ и ограничиваем его длину
+            gpt_response = response.choices[0].message['content'].strip()
+            return gpt_response[:MAX_RESPONSE_LENGTH]
         except Exception as e:
             print(f"Ошибка при вызове GPT-4o-mini API: {e}")
             return "Произошла ошибка при получении ответа. Попробуйте позже."
@@ -54,7 +59,7 @@ class SF_GPT_Main(commands.Cog):
 
         # Поиск релевантного контента в базе знаний
         relevant_content = self.find_relevant_content(query)
-        
+
         if relevant_content:
             response = relevant_content
         else:
