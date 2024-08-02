@@ -1,3 +1,4 @@
+import json  # Добавьте этот импорт
 import openai
 import discord
 from discord.ext import commands
