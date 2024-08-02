@@ -33,30 +33,14 @@ class SF_GPT_Main(commands.Cog):
             content_lower = item['content'].lower()
             # Проверяем, есть ли в запросе ключевые слова из заголовка или контента
             if query_lower in title_lower or query_lower in content_lower:
+                print(f"Found relevant content for query: {query}")  # Отладочное сообщение
                 return item['content']
+        print(f"No relevant content found for query: {query}")  # Отладочное сообщение
         return None
-
-    async def get_gpt_response(self, query):
-        """Получение ответа от GPT-4o-mini на основе запроса."""
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",  # Убедитесь, что имя модели правильное
-                messages=[
-                    {"role": "user", "content": query}
-                ],
-                max_tokens=150,
-                temperature=0.7
-            )
-            # Получаем ответ и ограничиваем его длину
-            gpt_response = response.choices[0].message['content'].strip()
-            return gpt_response[:MAX_RESPONSE_LENGTH]
-        except Exception as e:
-            print(f"Ошибка при вызове GPT-4o-mini API: {e}")
-            return "Произошла ошибка при получении ответа. Попробуйте позже."
 
     @commands.command(name='sf', aliases=['SF'])
     async def sf(self, ctx, *, query: str = None):
-        """Команда для получения ответа из базы знаний или GPT-4o-mini."""
+        """Команда для получения ответа из базы знаний."""
         if query is None:
             await ctx.send("Пожалуйста, введите вопрос или запрос.")
             return
