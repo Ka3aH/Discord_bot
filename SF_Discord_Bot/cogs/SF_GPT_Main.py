@@ -26,15 +26,21 @@ class SF_GPT_Main(commands.Cog):
             return json.load(file)
 
     def find_relevant_content(self, query):
-        """Ищет наиболее релевантное содержание в базе знаний по запросу."""
+        """Ищет наиболее релевантное содержание в базе знаний по запросу и возвращает выжимку."""
         query_lower = query.lower()
         for item in self.knowledge_base:
             title_lower = item.get('title', '').lower()
             content_lower = item.get('content', '').lower()
-            # Проверяем наличие ключевых слов в заголовке или содержимом
             if query_lower in title_lower or query_lower in content_lower:
-                return item['content']
+                # Возвращаем выжимку из содержимого, если найдено совпадение
+                return self.extract_summary(item['content'])
         return None
+
+    def extract_summary(self, content):
+        """Извлечение выжимки из контента для краткого ответа."""
+        # Это простая реализация; можно настроить для извлечения более осмысленных частей
+        # Здесь просто берем первые 500 символов контента
+        return content[:500]
 
     async def get_gpt_response(self, query):
         """Получение ответа от GPT-4o-mini на основе запроса."""
