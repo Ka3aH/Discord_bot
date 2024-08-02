@@ -1,4 +1,4 @@
-import json  # Добавьте этот импорт
+import json
 import openai
 import discord
 from discord.ext import commands
@@ -22,12 +22,12 @@ class SF_GPT_Main(commands.Cog):
         with open(knowledge_base_file, 'r', encoding='utf-8') as file:
             return json.load(file)
 
-    def is_query_in_knowledge_base(self, query):
-        """Проверяет, есть ли запрос в базе знаний."""
+    def find_relevant_content(self, query):
+        """Ищет наиболее релевантное содержание в базе знаний по запросу."""
         for item in self.knowledge_base:
             if query.lower() in item['title'].lower() or query.lower() in item['content'].lower():
-                return True
-        return False
+                return item['content']
+        return None
 
     async def get_gpt_response(self, query):
         """Получение ответа от GPT-4o-mini на основе запроса."""
@@ -52,13 +52,16 @@ class SF_GPT_Main(commands.Cog):
             await ctx.send("Пожалуйста, введите вопрос или запрос.")
             return
 
-        if not self.is_query_in_knowledge_base(query):
-            # Если запрос не найден в базе знаний
-            response = "Я тут, чтобы помогать вам с SoftField, а не для других тем. Для обсуждения других вопросов, пожалуйста, посетите сайт ChatGPT."
+        # Поиск релевантного контента в базе знаний
+        relevant_content = self.find_relevant_content(query)
+        
+        if relevant_content:
+            response = relevant_content
         else:
-            # Получение ответа от GPT-4o-mini, если запрос найден в базе знаний
+            # Если в базе знаний нет точного совпадения, используем GPT для обработки запроса
             response = await self.get_gpt_response(query)
         
+        # Отправка ответа пользователю
         await ctx.send(response)
 
 async def setup(bot):
