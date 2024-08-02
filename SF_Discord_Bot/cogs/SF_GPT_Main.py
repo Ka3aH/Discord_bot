@@ -67,16 +67,8 @@ class SF_GPT_Main(commands.Cog):
         if relevant_content:
             response = relevant_content
         else:
-            # Если в базе знаний нет точного совпадения, проверяем, может ли GPT предоставить полезный ответ
-            gpt_response = await self.get_gpt_response(query)
-            if gpt_response:
-                # Проверяем, содержится ли в ответе что-то из базы данных
-                if any(term.lower() in gpt_response.lower() for term in ['ядро', 'проект', 'softfield']):
-                    response = gpt_response
-                else:
-                    response = "Я не могу предоставить ответ на этот вопрос из-за ограничений."
-            else:
-                response = "Я не могу предоставить ответ на этот вопрос из-за ограничений."
+            # Если в базе знаний нет точного совпадения, выдаем сообщение об ограничениях
+            response = "Я не могу предоставить ответ на этот вопрос из-за ограничений."
 
         # Отправка ответа пользователю
         if len(response) > MAX_RESPONSE_LENGTH:
