@@ -3,3 +3,4 @@ openai==0.28.0
 requests>=2.25.0
 python-dotenv
 numpy
+elasticsearch
