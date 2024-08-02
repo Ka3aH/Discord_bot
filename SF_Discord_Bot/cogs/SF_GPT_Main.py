@@ -41,22 +41,19 @@ class SF_GPT_Main(commands.Cog):
 
     async def get_gpt_response(self, query):
         """Получение ответа от GPT-4o-mini на основе запроса."""
+        context = ("Используй только информацию из базы знаний SoftField для ответов. "
+                   "Если запрос касается темы, которая упоминается в базе знаний, используй соответствующую информацию. "
+                   "Если данных недостаточно, укажи, что информации нет.")
+        prompt = f"{context}\n\nЗапрос: {query}"
+        
         try:
-            context = ("Используй только информацию из базы знаний SoftField для ответов. "
-                       "Если запрос касается темы, которая упоминается в базе знаний, используй соответствующую информацию. "
-                       "Если данных недостаточно, укажи, что информации нет.")
-            prompt = f"{context}\n\nЗапрос: {query}"
-            
-            response = openai.ChatCompletion.create(
+            response = openai.Completion.create(
                 model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": context},
-                    {"role": "user", "content": query}
-                ],
+                prompt=prompt,
                 max_tokens=150,
                 temperature=0.7
             )
-            gpt_response = response.choices[0].message['content'].strip()
+            gpt_response = response.choices[0].text.strip()
             return gpt_response[:MAX_RESPONSE_LENGTH]
         except Exception as e:
             print(f"Ошибка при вызове GPT-4o-mini API: {e}")
