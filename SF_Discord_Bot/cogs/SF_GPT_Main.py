@@ -27,8 +27,11 @@ class SF_GPT_Main(commands.Cog):
 
     def find_relevant_content(self, query):
         """Ищет наиболее релевантное содержание в базе знаний по запросу."""
+        query_lower = query.lower()
         for item in self.knowledge_base:
-            if query.lower() in item['title'].lower() or query.lower() in item['content'].lower():
+            title_lower = item['title'].lower()
+            content_lower = item['content'].lower()
+            if query_lower in title_lower or query_lower in content_lower:
                 return item['content']
         return None
 
@@ -63,7 +66,7 @@ class SF_GPT_Main(commands.Cog):
         if relevant_content:
             response = relevant_content
         else:
-            # Если в базе знаний нет точного совпадения, сообщаем о невозможности предоставить ответ
+            # Если в базе знаний нет точного совпадения, сообщаем, что не можем предоставить ответ
             response = "Я не могу предоставить ответ на этот вопрос из-за ограничений."
 
         # Отправка ответа пользователю
