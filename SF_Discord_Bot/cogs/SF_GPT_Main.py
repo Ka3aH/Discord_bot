@@ -32,14 +32,11 @@ class SF_GPT_Main(commands.Cog):
             title_lower = item.get('title', '').lower()
             content_lower = item.get('content', '').lower()
             if query_lower in title_lower or query_lower in content_lower:
-                # Возвращаем выжимку из содержимого, если найдено совпадение
                 return self.extract_summary(item['content'])
-        return None
+        return "Извините, информация по вашему запросу не найдена в базе знаний."
 
     def extract_summary(self, content):
         """Извлечение выжимки из контента для краткого ответа."""
-        # Это простая реализация; можно настроить для извлечения более осмысленных частей
-        # Здесь просто берем первые 500 символов контента
         return content[:500]
 
     async def get_gpt_response(self, query):
@@ -53,7 +50,6 @@ class SF_GPT_Main(commands.Cog):
                 max_tokens=150,
                 temperature=0.7
             )
-            # Получаем ответ и ограничиваем его длину
             gpt_response = response.choices[0].message['content'].strip()
             return gpt_response[:MAX_RESPONSE_LENGTH]
         except Exception as e:
