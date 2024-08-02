@@ -69,7 +69,7 @@ class SF_GPT_Main(commands.Cog):
         else:
             # Если в базе знаний нет точного совпадения, используем GPT для обработки запроса
             response = await self.get_gpt_response(query)
-
+        
         # Отправка ответа пользователю
         if len(response) > MAX_RESPONSE_LENGTH:
             response = response[:MAX_RESPONSE_LENGTH]
