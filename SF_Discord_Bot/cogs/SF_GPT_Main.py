@@ -32,6 +32,7 @@ class SF_GPT_Main(commands.Cog):
             title_lower = item.get('title', '').lower()
             content_lower = item.get('content', '').lower()
             if query_lower in title_lower or query_lower in content_lower:
+                # Возвращаем выжимку из содержимого, если найдено совпадение
                 return self.extract_summary(item['content'])
         return None
 
@@ -41,7 +42,7 @@ class SF_GPT_Main(commands.Cog):
 
     async def get_gpt_response(self, query):
         """Получение ответа от GPT-4o-mini на основе запроса."""
-        context = ("Используй только информацию из базы знаний SoftField для ответов. "
+        context = ("Используйте только информацию из базы знаний SoftField для ответов. "
                    "Если запрос касается темы, которая упоминается в базе знаний, используй соответствующую информацию. "
                    "Если данных недостаточно, укажи, что информации нет.")
         prompt = f"{context}\n\nЗапрос: {query}"
