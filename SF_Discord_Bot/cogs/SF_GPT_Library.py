@@ -8,6 +8,7 @@ def load_knowledge_base():
     if not os.path.exists(KNOWLEDGE_BASE_FILE):
         raise FileNotFoundError(f"Knowledge base file {KNOWLEDGE_BASE_FILE} does not exist.")
     with open(KNOWLEDGE_BASE_FILE, 'r', encoding='utf-8') as file:
+        print("Loading knowledge base...")
         return json.load(file)
 
 def get_knowledge_response(query):
@@ -17,3 +18,7 @@ def get_knowledge_response(query):
         if query.lower() in item['title'].lower() or query.lower() in item['content'].lower():
             return item['content']
     return "Извините, я не могу ответить на этот вопрос, так как я создан для помощи по SoftField."
+
+async def setup(bot):
+    print("Setting up SF_GPT_Library...")
+    pass  # Placeholder function, required for loading the cog
