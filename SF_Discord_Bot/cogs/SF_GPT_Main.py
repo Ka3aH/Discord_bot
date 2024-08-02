@@ -52,7 +52,7 @@ class SF_GPT_Main(commands.Cog):
             return gpt_response[:MAX_RESPONSE_LENGTH]
         except Exception as e:
             print(f"Ошибка при вызове GPT-4o-mini API: {e}")
-            return None
+            return "Произошла ошибка при получении ответа. Попробуйте позже."
 
     @commands.command(name='sf', aliases=['SF'])
     async def sf(self, ctx, *, query: str = None):
@@ -67,10 +67,14 @@ class SF_GPT_Main(commands.Cog):
         if relevant_content:
             response = relevant_content
         else:
-            # Если в базе знаний нет точного совпадения, используем GPT для обработки запроса
+            # Если в базе знаний нет точного совпадения, проверяем, может ли GPT предоставить полезный ответ
             gpt_response = await self.get_gpt_response(query)
             if gpt_response:
-                response = gpt_response
+                # Проверяем, содержится ли в ответе что-то из базы данных
+                if any(term.lower() in gpt_response.lower() for term in ['ядро', 'проект', 'softfield']):
+                    response = gpt_response
+                else:
+                    response = "Я не могу предоставить ответ на этот вопрос из-за ограничений."
             else:
                 response = "Я не могу предоставить ответ на этот вопрос из-за ограничений."
 
