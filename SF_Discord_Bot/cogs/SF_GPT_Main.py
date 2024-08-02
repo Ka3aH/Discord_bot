@@ -11,6 +11,22 @@ class SF_GPT_Main(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.knowledge_base = self.load_knowledge_base()
+
+    def load_knowledge_base(self):
+        """Загрузка базы знаний из файла JSON."""
+        knowledge_base_file = 'SF_GPT_Library.json'
+        if not os.path.exists(knowledge_base_file):
+            raise FileNotFoundError(f"Knowledge base file {knowledge_base_file} does not exist.")
+        with open(knowledge_base_file, 'r', encoding='utf-8') as file:
+            return json.load(file)
+
+    def is_query_in_knowledge_base(self, query):
+        """Проверяет, есть ли запрос в базе знаний."""
+        for item in self.knowledge_base:
+            if query.lower() in item['title'].lower() or query.lower() in item['content'].lower():
+                return True
+        return False
 
     async def get_gpt_response(self, query):
         """Получение ответа от GPT-4o-mini на основе запроса."""
@@ -35,8 +51,13 @@ class SF_GPT_Main(commands.Cog):
             await ctx.send("Пожалуйста, введите вопрос или запрос.")
             return
 
-        # Получение ответа от GPT-4o-mini
-        response = await self.get_gpt_response(query)
+        if not self.is_query_in_knowledge_base(query):
+            # Если запрос не найден в базе знаний
+            response = "Я тут, чтобы помогать вам с SoftField, а не для других тем. Для обсуждения других вопросов, пожалуйста, посетите сайт ChatGPT."
+        else:
+            # Получение ответа от GPT-4o-mini, если запрос найден в базе знаний
+            response = await self.get_gpt_response(query)
+        
         await ctx.send(response)
 
 async def setup(bot):
