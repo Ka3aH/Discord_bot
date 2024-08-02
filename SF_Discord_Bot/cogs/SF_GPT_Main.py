@@ -33,7 +33,7 @@ class SF_GPT_Main(commands.Cog):
             content_lower = item.get('content', '').lower()
             if query_lower in title_lower or query_lower in content_lower:
                 return self.extract_summary(item['content'])
-        return "Извините, информация по вашему запросу не найдена в базе знаний."
+        return None
 
     def extract_summary(self, content):
         """Извлечение выжимки из контента для краткого ответа."""
@@ -42,9 +42,15 @@ class SF_GPT_Main(commands.Cog):
     async def get_gpt_response(self, query):
         """Получение ответа от GPT-4o-mini на основе запроса."""
         try:
+            context = ("Используй только информацию из базы знаний SoftField для ответов. "
+                       "Если запрос касается темы, которая упоминается в базе знаний, используй соответствующую информацию. "
+                       "Если данных недостаточно, укажи, что информации нет.")
+            prompt = f"{context}\n\nЗапрос: {query}"
+            
             response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",  # Убедитесь, что имя модели правильное
+                model="gpt-4o-mini",
                 messages=[
+                    {"role": "system", "content": context},
                     {"role": "user", "content": query}
                 ],
                 max_tokens=150,
