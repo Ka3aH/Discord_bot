@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from sf_gpt_library import get_knowledge_response
+from .sf_gpt_library import get_knowledge_response  # Используйте относительный импорт
 
 class SF_GPT_Main(commands.Cog):
     """Cog для обработки команды !SF и использования базы знаний из JSON файла."""
@@ -9,9 +9,9 @@ class SF_GPT_Main(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def sf(self, ctx, *, query: str):
+    async def sf(self, ctx, *, query: str = None):
         """Команда для получения ответа на основе базы знаний из JSON файла."""
-        if not query:
+        if query is None:
             await ctx.send("Пожалуйста, введите вопрос или запрос.")
             return
 
