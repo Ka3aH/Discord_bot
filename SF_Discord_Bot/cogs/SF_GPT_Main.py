@@ -50,7 +50,8 @@ class SF_GPT_Main(commands.Cog):
             print(f"Ошибка при вызове GPT-4o-mini API: {e}")
             return "Произошла ошибка при получении ответа. Попробуйте позже."
 
-    @commands.command()
+    @commands.command(name='sf')
+    @commands.command(name='SF')
     async def sf(self, ctx, *, query: str = None):
         """Команда для получения ответа от GPT-4o-mini."""
         if query is None:
@@ -67,6 +68,8 @@ class SF_GPT_Main(commands.Cog):
             response = await self.get_gpt_response(query)
         
         # Отправка ответа пользователю
+        if len(response) > MAX_RESPONSE_LENGTH:
+            response = response[:MAX_RESPONSE_LENGTH]
         await ctx.send(response)
 
 async def setup(bot):
