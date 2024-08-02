@@ -4,14 +4,14 @@ import os
 import asyncio
 from dotenv import load_dotenv
 
-# Загрузка переменных окружения из файла .env
+# Загрузка переменных окружения
 load_dotenv()
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 
 intents = discord.Intents.default()
 intents.message_content = True
 
-bot = commands.Bot(command_prefix='!', intents=intents, case_insensitive=True)
+bot = commands.Bot(command_prefix='!', intents=intents)
 
 async def load_extensions():
     for filename in os.listdir('./cogs'):
