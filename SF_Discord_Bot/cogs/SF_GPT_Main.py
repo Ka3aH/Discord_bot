@@ -58,16 +58,19 @@ class SF_GPT_Main(commands.Cog):
         prompt = f"{context}\nЗапрос: {query}"
         
         try:
-            response = openai.Completion.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4o-mini",
-                prompt=prompt,
+                messages=[
+                    {"role": "system", "content": context},
+                    {"role": "user", "content": query}
+                ],
                 max_tokens=150,
                 temperature=0.7
             )
-            gpt_response = response.choices[0].text.strip()
+            gpt_response = response.choices[0].message['content'].strip()
             return gpt_response
         except Exception as e:
-            print(f"Ошибка при вызове GPT-4o-mini API: {e}")
+            print(f"Ошибка при вызове GPT-4 API: {e}")
             return "Произошла ошибка при получении ответа. Попробуйте позже."
 
     def split_response(self, response, max_length):
@@ -85,7 +88,7 @@ class SF_GPT_Main(commands.Cog):
 
     @commands.command(name='sf', aliases=['SF'])
     async def sf(self, ctx, *, query: str = None):
-        """Команда для получения ответа от GPT-4o-mini или из базы знаний."""
+        """Команда для получения ответа от GPT-4 или из базы знаний."""
         if query is None:
             await ctx.send("Пожалуйста, введите вопрос или запрос.")
             return
