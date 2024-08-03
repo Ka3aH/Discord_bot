@@ -59,7 +59,7 @@ class SF_GPT_Main(commands.Cog):
         
         try:
             response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",
+                model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": context},
                     {"role": "user", "content": query}
