@@ -9,7 +9,7 @@ import numpy as np
 # Загрузите ваш API ключ OpenAI из переменных окружения
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-# Определите максимальную длину ответа
+# Определите максимальную длину ответа для Discord
 MAX_RESPONSE_LENGTH = 2000
 
 class SF_GPT_Main(commands.Cog):
@@ -68,10 +68,23 @@ class SF_GPT_Main(commands.Cog):
                 temperature=0.7
             )
             gpt_response = response.choices[0].message['content'].strip()
-            return gpt_response[:MAX_RESPONSE_LENGTH]
+            return gpt_response
         except Exception as e:
             print(f"Ошибка при вызове GPT-4 API: {e}")
             return "Произошла ошибка при получении ответа. Попробуйте позже."
+
+    def split_response(self, response, max_length):
+        """Разбивает ответ на части, чтобы каждая часть не превышала максимальную длину."""
+        parts = []
+        while len(response) > max_length:
+            split_index = response.rfind(' ', 0, max_length)
+            if split_index == -1:
+                split_index = max_length
+            parts.append(response[:split_index])
+            response = response[split_index:].strip()
+        if response:
+            parts.append(response)
+        return parts
 
     @commands.command(name='sf', aliases=['SF'])
     async def sf(self, ctx, *, query: str = None):
@@ -86,10 +99,12 @@ class SF_GPT_Main(commands.Cog):
         # Использование GPT для обработки запроса с учетом релевантного контента
         response = await self.get_gpt_response(query, relevant_content)
         
+        # Разбиваем ответ на части, если он превышает максимальную длину
+        response_parts = self.split_response(response, MAX_RESPONSE_LENGTH)
+        
         # Отправка ответа пользователю
-        if len(response) > MAX_RESPONSE_LENGTH:
-            response = response[:MAX_RESPONSE_LENGTH]
-        await ctx.send(response)
+        for part in response_parts:
+            await ctx.send(part)
 
 async def setup(bot):
     await bot.add_cog(SF_GPT_Main(bot))
