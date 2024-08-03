@@ -89,5 +89,4 @@ class SF_GPT_Main(commands.Cog):
         await ctx.send(response)
 
 async def setup(bot):
-    print("Setting up SF_GPT_Main...")
     await bot.add_cog(SF_GPT_Main(bot))
