@@ -11,6 +11,7 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 # Определите максимальную длину ответа для Discord
 MAX_RESPONSE_LENGTH = 2000
+MAX_TOKENS = 500  # Установите значение в зависимости от желаемой длины ответа
 
 class SF_GPT_Main(commands.Cog):
     """Cog для обработки команды !sf и использования GPT-4o-mini для ответов на запросы."""
@@ -64,7 +65,7 @@ class SF_GPT_Main(commands.Cog):
                     {"role": "system", "content": context},
                     {"role": "user", "content": query}
                 ],
-                max_tokens=150,
+                max_tokens=MAX_TOKENS,  # Ограничение на количество токенов
                 temperature=0.7
             )
             gpt_response = response.choices[0].message['content'].strip()
